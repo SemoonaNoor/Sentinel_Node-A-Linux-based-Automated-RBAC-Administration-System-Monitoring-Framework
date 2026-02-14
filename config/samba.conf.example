@@ -1,0 +1,55 @@
+---
+
+### 2. The Samba Configuration Example
+**Command:** `nano config/samba.conf.example`
+
+*Note: This file shows how the Linux permissions we set in the script translate to a network share.*
+
+```text
+# ==========================================
+# Sentinel Node - Samba Configuration Template
+# Path: /etc/samba/smb.conf
+# ==========================================
+
+[global]
+   workgroup = SENTINEL
+   server string = Sentinel Node File Server
+   log file = /var/log/samba/log.%m
+   max log size = 1000
+   logging = file
+   panic action = /usr/share/samba/panic-action %d
+   
+   # Security Settings
+   server role = standalone server
+   obey pam restrictions = yes
+   unix password sync = yes
+   map to guest = bad user
+
+# ================= Share Definitions =================
+
+[hr_data]
+   comment = Human Resources Secure Storage
+   path = /srv/dc_storage/hr_data
+   browseable = yes
+   read only = no
+   create mask = 0770
+   directory mask = 0770
+   valid users = @hr
+   force group = hr
+
+[eng_data]
+   comment = Engineering Secure Storage
+   path = /srv/dc_storage/eng_data
+   browseable = yes
+   read only = no
+   create mask = 0770
+   directory mask = 0770
+   valid users = @eng
+   force group = eng
+
+[backups]
+   comment = Sentinel System Backups (Admin Only)
+   path = /srv/dc_storage/backups
+   browseable = no
+   read only = yes
+   valid users = samcheoll
